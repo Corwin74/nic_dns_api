@@ -15,7 +15,7 @@ request_body =  {
                 "grant_type": "password",
                 "username": USER_NAME,
                 "password": USER_PASSWORD,
-                "scope": "fick",
+                "scope": "(GET|POST|DELETE):/dns-master/.+",
 }
 
 
@@ -26,4 +26,5 @@ response = requests.post(
                   headers=headers,
 )
 response.raise_for_status()
-print(response.text)
+print(response.json()['access_token'])
+
