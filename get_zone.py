@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import requests
 
 NIC_ZONE_URL = 'https://api.nic.ru/dns-master/zones'
-headers = {"Authorization": "Bearer AnIVUfonA2mpHLWauKdlgEIHQX7izwFiQ4e2S7cyLOxnSxR8gIDrp6ydtd0MCczY6nuWbYA84xW_ZtJZtBoxTvpYB9m"}
+headers = {"Authorization": "Bearer AxEStRu6tNjee3z7hkjgf7sSpT--5OriyJbPEzKwcaYWBNK_hll8ywGy8z-QAczC2xySn-_GUV30QK3RZRr9XvOQrdK"}
 
 response = requests.get(NIC_ZONE_URL, headers=headers)
 response.raise_for_status()

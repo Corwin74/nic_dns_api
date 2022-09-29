@@ -4,18 +4,11 @@ import requests
 
 NIC_SERVICE = '3DNS_HOST'
 NIC_ZONE = 'shockland.ru'
-NIC_TOKEN = 'AXYlA9SWtJmqv0khFKu8Hi0UMMeXfK4iWbzfseBuJQirrcN6X8lhJGewWEJZ0cz6QHm2ar25Sbfsn1uE-JRrsNPr6wB'
+NIC_TOKEN = 'AxEStRu6tNjee3z7hkjgf7sSpT--5OriyJbPEzKwcaYWBNK_hll8ywGy8z-QAczC2xySn-_GUV30QK3RZRr9XvOQrdK'
 NIC_RECORDS_URL = f'https://api.nic.ru/dns-master/services/{NIC_SERVICE}/zones/{NIC_ZONE}/records'
 NIC_COMMIT_ZONE_URL = 'https://api.nic.ru/dns-master/services/3DNS_HOST/zones/shockland.ru/commit'
 
 headers = {"Authorization": f"Bearer {NIC_TOKEN}"}
-
-
-def delete_acme(id):
-    response = requests.delete(f'NIC_ZONE_URL/{id}', headers=headers)
-    response.raise_for_status()
-    response = requests.post(NIC_COMMIT_ZONE_URL, headers=headers)
-    response.raise_for_status()
 
 
 def etree_to_dict(t):
@@ -40,7 +33,42 @@ def etree_to_dict(t):
             records[t.tag] = text
     return records
 
-def get_acme_rr():
+
+def add_acme_record(text):
+
+    template = f'''
+        <?xml version="1.0" encoding="UTF-8" ?>
+            <request>
+                <rr-list>
+                    <rr>
+                        <name>_acme-challenge</name>
+                        <type>TXT</type>
+                            <txt>
+                                <string>
+                                    {text}
+                                </string>
+                            </txt>
+                    </rr>
+                </rr-list>
+            </request>
+        '''
+
+    response = requests.put(NIC_RECORDS_URL, headers=headers, data=template)
+    response.raise_for_status()
+    response = requests.post(NIC_COMMIT_ZONE_URL, headers=headers)
+    response.raise_for_status()
+    return response.text
+
+
+def delete_acme_record(record_id):
+    response = requests.delete(f'{NIC_RECORDS_URL}/{record_id}', headers=headers)
+    response.raise_for_status()
+    response = requests.post(NIC_COMMIT_ZONE_URL, headers=headers)
+    response.raise_for_status()
+    return response.text
+
+
+def get_acme_records():
     response = requests.get(NIC_RECORDS_URL, headers=headers)
     response.raise_for_status()
     root_node = ET.fromstring(response.text)
@@ -56,5 +84,6 @@ def get_acme_rr():
             )
     return acme_records
 
+
 if __name__ == "__main__":
-    print(get_acme_rr())
+    print(delete_acme_record('52489584'))
