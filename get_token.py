@@ -15,7 +15,7 @@ request_body =  {
                 "grant_type": "password",
                 "username": USER_NAME,
                 "password": USER_PASSWORD,
-                "scope": "(GET|POST|DELETE):/dns-master/.+",
+                "scope": "(GET|POST|DELETE|PUT):/dns-master/.+",
 }
 
 
